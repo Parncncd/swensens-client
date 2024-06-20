@@ -1,0 +1,80 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import-normalize;
+
+/* Container Padding */
+.container,
+.container-fluid {
+	padding: 54px 24px;
+	margin: 0 auto;
+	max-width: 1200px;
+}
+
+@media (max-width: 820px) {
+	.container,
+	.container-box,
+	.container-fluid {
+		padding: 72px 16px;
+	}
+}
+
+.form-card {
+	max-width: 480px;
+	margin: 0 auto;
+	overflow: hidden;
+	border-radius: 10px;
+	background-color: #fff;
+	width: 500px;
+}
+
+.box-header {
+	color: #fff;
+	height: 240px;
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	background-image: url('~/assets/images/card-head.png');
+	background-color: #dbdbdb;
+	background-size: cover;
+	background-position: top;
+}
+
+.box-body {
+	padding: 40px;
+}
+
+.form-label {
+	color: #3b3b3b;
+}
+
+.box-body .form {
+	font-weight: 200;
+	/* border-color: rgba(153, 151, 151, 0.582); */
+	border-style: solid;
+	border-radius: 10px;
+	border-width: 1px;
+	padding: 0 8px;
+	margin-top: 10px;
+	width: 100%;
+}
+
+.errorMessage {
+	color: #e21c23;
+	font-size: 14px;
+	font-weight: 300;
+	margin-top: 5px;
+}
+
+:where(.css-dev-only-do-not-override-19iuou).ant-input-affix-wrapper::before {
+	width: 0;
+	visibility: hidden;
+	content: none;
+}
