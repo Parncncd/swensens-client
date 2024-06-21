@@ -7791,6 +7791,8 @@ li.ant-calendar-time-picker-select-option-disabled:hover {
 	text-decoration: none;
 }
 .ant-drawer-header {
+	display: none;
+	visibility: hidden;
 	position: relative;
 	padding: 16px 24px;
 	border-bottom: 1px solid #e8e8e8;
@@ -7802,7 +7804,7 @@ li.ant-calendar-time-picker-select-option-disabled:hover {
 	background: #fff;
 }
 .ant-drawer-body {
-	padding: 24px;
+	padding: 0;
 	font-size: 14px;
 	line-height: 1.5;
 	word-wrap: break-word;
@@ -25414,6 +25416,8 @@ hr {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin-bottom: 28px;
+
 }
 
 .section-heading .see-more {
@@ -26383,12 +26387,22 @@ hr {
 .header-left[data-v-1def8f76] {
 	display: none;
 }
-
-.header-left {
+@media (max-width: 820px) {
+    .header-left[data-v-1def8f76], .header-right[data-v-1def8f76] {
+        width: 80px;
+        flex-shrink: 0;
+    }
 }
 
 .header-right[data-v-1def8f76] {
 	margin-left: auto;
+}
+
+@media (max-width: 820px) {
+    .header-right[data-v-1def8f76] {
+        justify-content: flex-end;
+        margin: -27px 0 0 !important;
+    }
 }
 
 .location[data-v-1def8f76] {
@@ -26401,6 +26415,17 @@ hr {
 	height: 100%;
 	display: flex;
 	align-items: center;
+}
+@media (max-width: 820px) {
+    .logo[data-v-1def8f76] {
+        display: inline;
+        margin: 0;
+        flex-grow: 1;
+        text-align: top;
+        justify-content: center;
+        margin: 24px 0 0 -30px !important;
+        height: 50%;
+    }
 }
 
 .logo svg[data-v-1def8f76] {
@@ -26424,12 +26449,19 @@ hr {
 	border: none;
 }
 
+
 .header-user-menu[data-v-1def8f76] > li {
 	font-size: 18px;
 	font-weight: 400;
 	top: 0;
 	line-height: 72px;
 	border-left: 1px solid #f4f4f4;
+}
+@media (max-width: 820px) {
+    .header-user-menu[data-v-1def8f76] >li {
+        line-height: 72px;
+        border: 0;
+    }
 }
 
 .header-user-menu[data-v-1def8f76] > .ant-menu-item,
@@ -26441,6 +26473,13 @@ hr {
 .header-user-menu[data-v-1def8f76] > .ant-menu-item {
 	padding-left: 28px;
 	padding-right: 28px;
+}
+
+@media (max-width: 820px) {
+    .header-user-menu[data-v-1def8f76] >.ant-menu-item, .header-user-menu[data-v-1def8f76] >.ant-menu-submenu .ant-menu-submenu-title {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
 }
 
 .header-user-menu[data-v-1def8f76] > .ant-menu-submenu .ant-menu-submenu-title {
