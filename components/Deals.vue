@@ -637,10 +637,10 @@
 						class="slick-dots"
 						style="display: block"
 					>
-						<li class="">
+						<li class="slick-active">
 							<button>1</button>
 						</li>
-						<li class="slick-active">
+						<li class="">
 							<button>2</button>
 						</li>
 					</ul>

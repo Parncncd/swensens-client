@@ -1,7 +1,8 @@
 <template>
 	<div class="reward-carousel">
-		<div class="container">
-			<div class="reward-card-row">
+		<!-- <div class="container"> -->
+		<div>
+			<div class="reward-card-row flex justify-center">
 				<div
 					class="card-col"
 					v-for="(reward, index) in rewards"
@@ -85,13 +86,6 @@ import { rewards } from '~/assets/text/rewards.js';
 <style scoped>
 .reward-carousel {
 	overflow: hidden;
-}
-
-.container {
-	display: flex;
-	flex-wrap: wrap;
-	margin-left: -12px;
-	margin-right: -12px;
 }
 
 .reward-card-row {

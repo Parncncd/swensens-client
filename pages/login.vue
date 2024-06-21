@@ -84,20 +84,15 @@
 								Forgot password?
 							</h2>
 						</div>
-						<RouterLink to="/">
-							<a-button
-								class="button w-full mt-5"
-								type="primary"
-								@click="
-									submitData
-								"
-								:disabled="
-									!isFormValid
-								"
-							>
-								Login
-							</a-button>
-						</RouterLink>
+
+						<a-button
+							class="button w-full mt-5"
+							type="primary"
+							@click="submitData"
+							:disabled="!isFormValid"
+						>
+							Login
+						</a-button>
 					</div>
 				</div>
 			</div>
@@ -107,15 +102,17 @@
 </template>
 
 <script setup>
-import { reactive, computed, watch } from 'vue';
-// import { Footer } from 'ant-design-vue/es/layout/layout';
-import { state, actions } from '../stores/auth';
+import { reactive, computed } from 'vue';
+import { actions } from '../stores/auth';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
 const formData = reactive({
 	email: '',
 	password: '',
 });
 
-// Computed properties for form validation
 const emailStatus = computed(() =>
 	formData.email.includes('@') || formData.email === '' ? '' : 'error'
 );
@@ -124,7 +121,6 @@ const passwordStatus = computed(() =>
 	formData.password.length >= 8 || formData.password === '' ? '' : 'error'
 );
 
-// Computed property to check if the form is valid for submission
 const isFormValid = computed(() => {
 	return (
 		formData.email.trim() !== '' &&
@@ -135,7 +131,6 @@ const isFormValid = computed(() => {
 	);
 });
 
-// Function to submit form data to API
 const submitData = async () => {
 	try {
 		const response = await fetch('http://127.0.0.1:5000/login', {
@@ -152,21 +147,24 @@ const submitData = async () => {
 		if (response.ok) {
 			const responseData = await response.json();
 			console.log('Login successful:', responseData);
-			// !!!!!!!!! WARNING !!!!!!!!!
-			// for test only !! dont forget to remove this line !!
 			actions.login();
 			router.push('/');
 		} else {
 			const errorData = await response.json();
 			console.error('Login failed:', errorData);
+			Modal.error({
+				title: 'Login Failed',
+				content:
+					errorData.message ||
+					'Unknown error occurred',
+			});
 		}
-		actions.login();
-		router.push('/');
 	} catch (error) {
-		// !!!!!!!!! WARNING !!!!!!!!!
-		// for test only !! dont forget to remove this line !!
-		actions.login();
 		console.error('Error during login:', error);
+		Modal.error({
+			title: 'Error',
+			content: 'An error occurred while logging in. Please try again later.',
+		});
 	}
 };
 </script>

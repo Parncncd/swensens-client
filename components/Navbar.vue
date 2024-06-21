@@ -1,9 +1,30 @@
 <script setup>
 import { theme } from 'ant-design-vue';
 import { RouterLink } from 'vue-router';
-import { state } from '~/stores/auth';
+import { state } from '~/stores/auth.js';
+import { ref, onMounted } from 'vue';
 
 const isAuthenticated = computed(() => state.isAuthenticated);
+
+const checkAuthentication = () => {
+	const token = localStorage.getItem('isLoggedIn');
+	state.isAuthenticated = !!token;
+};
+
+onMounted(() => {
+	checkAuthentication();
+});
+
+const open = ref(false);
+const afterOpenChange = (bool) => {
+	console.log('open', bool);
+};
+const showDrawer = () => {
+	open.value = true;
+};
+const logout = () => {
+	actions.logout();
+};
 </script>
 <template>
 	<header
@@ -18,21 +39,6 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 				role="menu"
 				class="header-user-menu ant-menu ant-menu-horizontal ant-menu-root ant-menu-light"
 			>
-				<li
-					role="menuitem"
-					class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-					style="display: none"
-				>
-					<div
-						aria-haspopup="true"
-						class="ant-menu-submenu-title"
-					>
-						<span>···</span
-						><i
-							class="ant-menu-submenu-arrow"
-						></i>
-					</div>
-				</li>
 				<li
 					data-v-1def8f76=""
 					role="menuitem"
@@ -50,25 +56,6 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 						"
 					/>
 				</li>
-				<li
-					role="menuitem"
-					class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-					style="
-						visibility: hidden;
-						position: absolute;
-						display: none;
-					"
-				>
-					<div
-						aria-haspopup="true"
-						class="ant-menu-submenu-title"
-					>
-						<span>···</span
-						><i
-							class="ant-menu-submenu-arrow"
-						></i>
-					</div>
-				</li>
 			</ul>
 			<div data-v-1def8f76="" class="location">
 				<ul
@@ -77,21 +64,6 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 					role="menu"
 					class="header-user-menu header-location-menu ant-menu ant-menu-horizontal ant-menu-root ant-menu-light"
 				>
-					<li
-						role="menuitem"
-						class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-						style="display: none"
-					>
-						<div
-							aria-haspopup="true"
-							class="ant-menu-submenu-title"
-						>
-							<span>···</span
-							><i
-								class="ant-menu-submenu-arrow"
-							></i>
-						</div>
-					</li>
 					<li
 						data-v-f89fbad4=""
 						role="menuitem"
@@ -142,25 +114,6 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 								></i></div
 						></a>
 					</li>
-					<li
-						role="menuitem"
-						class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-						style="
-							visibility: hidden;
-							position: absolute;
-							display: none;
-						"
-					>
-						<div
-							aria-haspopup="true"
-							class="ant-menu-submenu-title"
-						>
-							<span>···</span
-							><i
-								class="ant-menu-submenu-arrow"
-							></i>
-						</div>
-					</li>
 				</ul>
 			</div>
 		</div>
@@ -188,6 +141,7 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 			></a>
 		</div>
 		<div
+			v-if="!isAuthenticated"
 			data-v-1def8f76=""
 			class="header-right ant-space ant-space-horizontal ant-space-align-center"
 		>
@@ -214,24 +168,6 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 								role="menu"
 								class="header-user-menu header-location-menu ant-menu ant-menu-horizontal ant-menu-root ant-menu-light"
 							>
-								<li
-									role="menuitem"
-									class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-									style="
-										display: none;
-									"
-								>
-									<div
-										aria-haspopup="true"
-										class="ant-menu-submenu-title"
-									>
-										<span
-											>···</span
-										><i
-											class="ant-menu-submenu-arrow"
-										></i>
-									</div>
-								</li>
 								<li
 									data-v-f89fbad4=""
 									role="menuitem"
@@ -284,30 +220,12 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 											></i></div
 									></a>
 								</li>
-								<li
-									role="menuitem"
-									class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-									style="
-										visibility: hidden;
-										position: absolute;
-										display: none;
-									"
-								>
-									<div
-										aria-haspopup="true"
-										class="ant-menu-submenu-title"
-									>
-										<span
-											>···</span
-										><i
-											class="ant-menu-submenu-arrow"
-										></i>
-									</div>
-								</li>
 							</ul>
 						</div>
 						<div
-							v-if="!isAuthenticated"
+							v-if="
+								!state.isAuthenticated
+							"
 							data-v-1def8f76=""
 							class="ant-space-item"
 							style="
@@ -323,6 +241,7 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 								></a
 							>
 						</div>
+						<div v-else></div>
 						<div
 							v-if="!isAuthenticated"
 							data-v-1def8f76=""
@@ -350,10 +269,258 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 								class="header-user-menu ant-menu ant-menu-horizontal ant-menu-root ant-menu-light"
 							>
 								<li
+									data-v-1def8f76=""
 									role="menuitem"
-									class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
+									class="ant-menu-submenu ant-menu-submenu-horizontal"
+								>
+									<div
+										aria-haspopup="true"
+										class="ant-menu-submenu-title"
+									>
+										<span
+											data-v-1def8f76=""
+											class="submenu-title-wrapper"
+											>EN
+											<i
+												data-v-1def8f76=""
+												aria-label="icon: caret-down"
+												class="anticon anticon-caret-down"
+												style="
+													margin-right: 0px;
+												"
+												><svg
+													viewBox="0 0 1024 1024"
+													data-icon="caret-down"
+													width="1em"
+													height="1em"
+													fill="currentColor"
+													aria-hidden="true"
+													focusable="false"
+													class=""
+												>
+													<path
+														d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+													></path></svg></i></span
+										><i
+											class="ant-menu-submenu-arrow"
+										></i>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div data-v-1def8f76="" class="ant-space-item">
+				<ul
+					data-v-1def8f76=""
+					role="menu"
+					class="header-user-menu mobile-menu-toggle ant-menu ant-menu-horizontal ant-menu-root ant-menu-light is-default-layout is-not-login"
+				>
+					<li
+						data-v-1def8f76=""
+						role="menuitem"
+						class="shopping-bag ant-menu-item"
+						style="font-size: 0px"
+					>
+						<img
+							data-v-1def8f76=""
+							src="~/assets/images/icon-bag.svg"
+							alt=""
+							class="icon"
+							style="
+								height: 24px;
+								width: auto;
+							"
+						/>
+					</li>
+
+					<li
+						data-v-1def8f76=""
+						role="menuitem"
+						class="ant-menu-item"
+						style="
+							font-size: 0px;
+							padding-left: 0px;
+						"
+					>
+						<img
+							data-v-1def8f76=""
+							src="~/assets/images/menu.svg"
+							alt=""
+							class="icon"
+							style="
+								height: 32px;
+								width: auto;
+							"
+						/>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div
+			v-else
+			data-v-1def8f76=""
+			class="header-right ant-space ant-space-horizontal ant-space-align-center"
+		>
+			<div
+				data-v-1def8f76=""
+				class="ant-space-item"
+				style="margin-right: 0px"
+			>
+				<div data-v-1def8f76="" class="header-actions">
+					<div
+						data-v-1def8f76=""
+						class="action-list ant-space ant-space-horizontal ant-space-align-center"
+					>
+						<div
+							data-v-1def8f76=""
+							class="ant-space-item"
+							style="margin: 0 24px"
+						>
+							<ul
+								data-v-f89fbad4=""
+								data-v-1def8f76=""
+								role="menu"
+								class="header-user-menu header-location-menu ant-menu ant-menu-horizontal ant-menu-root ant-menu-light"
+							>
+								<li
+									data-v-f89fbad4=""
+									role="menuitem"
+									class="current-location ant-menu-item"
+								>
+									<a
+										data-v-f89fbad4=""
+										href="https://www.swensens1112.com/en/address"
+										class=""
+										><div
+											data-v-f89fbad4=""
+											class="menu-title-wrapper"
+										>
+											<img
+												data-v-f89fbad4=""
+												src="~/assets/images/icon-location.svg"
+												alt=""
+												class="icon"
+												style="
+													height: 24px;
+													width: auto;
+													margin-right: 8px;
+												"
+											/>
+											<span
+												data-v-f89fbad4=""
+												style="
+													font-size: 0.9em;
+												"
+												>1
+												Thanon
+												Chalong
+												Krung,
+												Khwaeng
+												Lam
+												Prathew,
+												Khet
+												Lat
+												Krabang,
+												Krung
+												Thep
+												Maha
+												Nakhon
+												10520,
+												Thailand</span
+											>
+										</div></a
+									>
+								</li>
+							</ul>
+						</div>
+						<div
+							v-if="isAuthenticated"
+							data-v-1def8f76=""
+							class="ant-space-item"
+							style="
+								margin-right: 24px;
+							"
+						>
+							<button
+								data-v-1def8f76=""
+								type="button"
+								class="button-scan button-has-icon ant-btn"
+								style="
+									display: flex;
+									align-items: center;
+									padding-left: 24px;
+									padding-right: 24px;
+								"
+							>
+								<span
+									data-v-1def8f76=""
+									class="icon"
+									><img
+										data-v-1def8f76=""
+										src="~/assets/images/icon-qr-scan.svg"
+										alt="" /></span
+								><span
+									>Scan</span
+								>
+							</button>
+						</div>
+						<div
+							data-v-1def8f76=""
+							class="ant-space-item"
+						>
+							<ul
+								data-v-1def8f76=""
+								role="menu"
+								class="header-user-menu member-menu ant-menu ant-menu-horizontal ant-menu-root ant-menu-light"
+							>
+								<li
+									data-v-1def8f76=""
+									role="menuitem"
+									class="shopping-bag ant-menu-item"
 									style="
-										display: none;
+										font-size: 0px;
+									"
+								>
+									<img
+										data-v-1def8f76=""
+										src="~/assets/images/icon-bag.svg"
+										alt=""
+										class="icon"
+										style="
+											height: 24px;
+											width: auto;
+										"
+									/>
+									<!---->
+								</li>
+
+								<li
+									data-v-1def8f76=""
+									role="menuitem"
+									class="favorite ant-menu-item"
+									style="
+										font-size: 0px;
+									"
+								>
+									<img
+										data-v-1def8f76=""
+										src="~/assets/images/icon-favorite.svg"
+										alt=""
+										class="icon"
+										style="
+											height: 32px;
+											width: auto;
+										"
+									/>
+								</li>
+								<li
+									data-v-1def8f76=""
+									role="menuitem"
+									class="ant-menu-submenu ant-menu-submenu-horizontal"
+									style="
+										font-size: 0px;
 									"
 								>
 									<div
@@ -361,7 +528,16 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 										class="ant-menu-submenu-title"
 									>
 										<span
-											>···</span
+											data-v-1def8f76=""
+											><img
+												data-v-1def8f76=""
+												src="~/assets/images/icon-inbox.svg"
+												alt=""
+												class="icon"
+												style="
+													height: 32px;
+													width: auto;
+												" /></span
 										><i
 											class="ant-menu-submenu-arrow"
 										></i>
@@ -406,12 +582,11 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 									</div>
 								</li>
 								<li
+									data-v-1def8f76=""
 									role="menuitem"
-									class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
+									class="ant-menu-submenu ant-menu-submenu-horizontal"
 									style="
-										visibility: hidden;
-										position: absolute;
-										display: none;
+										font-size: 0px;
 									"
 								>
 									<div
@@ -419,11 +594,286 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 										class="ant-menu-submenu-title"
 									>
 										<span
-											>···</span
+											data-v-1def8f76=""
+											><img
+												data-v-1def8f76=""
+												src="~/assets/images/icon-inbox.svg"
+												alt=""
+												class="icon"
+												style="
+													height: 32px;
+													width: auto;
+												" /></span
 										><i
 											class="ant-menu-submenu-arrow"
 										></i>
 									</div>
+								</li>
+								<li
+									role="menuitem"
+									class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
+								>
+									<img
+										data-v-1def8f76=""
+										src="~/assets/images/menu.svg"
+										alt=""
+										class="icon pl-6 cursor-pointer"
+										style="
+											height: 32px;
+											width: auto;
+										"
+										@click="
+											showDrawer
+										"
+									/>
+									<a-drawer
+										v-model:open="
+											open
+										"
+										placement="right"
+										@after-open-change="
+											afterOpenChange
+										"
+										:width="
+											320
+										"
+									>
+										<!-- Drawer Content -->
+										<div
+											style="
+												padding: 0;
+											"
+										>
+											<aside
+												class="page-sidebar ant-layout-sider ant-layout-sider-dark"
+												style="
+													flex: 0
+														0
+														320px;
+													max-width: 320px;
+													min-width: 320px;
+													width: 320px;
+													background: #fff;
+													padding: 16px
+														0;
+													min-height: calc(
+														100vh -
+															72px
+													);
+												"
+											>
+												<div
+													class="ant-layout-sider-children"
+												>
+													<!-- Welcome Section -->
+													<div
+														class="welcome"
+													>
+														<h2
+															class="heading"
+														>
+															Welcome
+															☺
+															🍨️
+														</h2>
+														<h3
+															class="name"
+														>
+															Chananchida
+															Srithongdee
+														</h3>
+													</div>
+													<ul
+														role="menu"
+														class="ant-menu ant-menu-inline ant-menu-root ant-menu-light"
+														style="
+															border-right: 0;
+														"
+													>
+														<li
+															role="menuitem"
+															class="ant-menu-item"
+															style="
+																padding-left: 24px;
+															"
+														>
+															<a
+																href="https://www.swensens1112.com/en/inbox"
+															>
+																<i
+																	class="anticon"
+																	style="
+																		font-size: 1.5em;
+																	"
+																>
+																	<svg
+																		width="1em"
+																		height="1em"
+																		viewBox="0 0 24 24"
+																		fill="currentColor"
+																	>
+																		<path
+																			fill-rule="evenodd"
+																			clip-rule="evenodd"
+																			d="M17.2967 7.16267L19.9387 12.8873C19.9793 12.9747 20 13.07 20 13.1667V17.3333C20 18.436 19.1027 19.3333 18 19.3333H6C4.89733 19.3333 4 18.436 4 17.3333V13.1667C4 13.07 4.02067 12.9747 4.06133 12.8873L6.704 7.162C7.02933 6.45667 7.742 6 8.52 6H15.48C16.258 6 16.9707 6.45667 17.2967 7.16267ZM8.52003 7.33334C8.2607 7.33334 8.02336 7.48534 7.9147 7.72067L5.63203 12.6667H7.00403C7.52336 12.6667 7.97203 13.0007 8.12136 13.498L8.8367 15.8807C8.85803 15.952 8.92203 16 8.99603 16H15.004C15.078 16 15.142 15.952 15.1627 15.8813L15.878 13.498C16.0274 13.0007 16.4767 12.6667 16.9954 12.6667H18.368L16.0854 7.72067C15.9767 7.48534 15.7394 7.33334 15.48 7.33334H8.52003Z"
+																		></path>
+																	</svg>
+																</i>
+																Message
+															</a>
+														</li>
+														<li
+															role="menuitem"
+															class="ant-menu-item"
+															style="
+																padding-left: 24px;
+															"
+														>
+															<a
+																href="https://www.swensens1112.com/en/order"
+															>
+																<i
+																	class="anticon"
+																	style="
+																		font-size: 1.5em;
+																	"
+																>
+																	<svg
+																		width="1em"
+																		height="1em"
+																		viewBox="0 0 24 24"
+																		fill="currentColor"
+																	>
+																		<path
+																			fill-rule="evenodd"
+																			clip-rule="evenodd"
+																			d="M20 6.5V8V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V5C4 3.34315 5.34315 2 7 2H14H15.5L17 3.5L20 6.5ZM14 3.5H7C6.17157 3.5 5.5 4.17157 5.5 5V19C5.5 19.8284 6.17157 20.5 7 20.5H17C17.8284 20.5 18.5 19.8284 18.5 19V8H17C15.3431 8 14 6.65685 14 5V3.5ZM15.5 4.12134L17.8787 6.50002H17C16.1716 6.50002 15.5 5.82844 15.5 5.00002V4.12134ZM8.75 9C8.33579 9 8 9.33579 8 9.75C8 10.1642 8.33579 10.5 8.75 10.5H15.25C15.6642 10.5 16 10.1642 16 9.75C16 9.33579 15.6642 9 15.25 9H8.75ZM8 12.75C8 12.3358 8.33579 12 8.75 12H15.25C15.6642 12 16 12.3358 16 12.75C16 13.1642 15.6642 13.5 15.25 13.5H8.75C8.33579 13.5 8 13.1642 8 12.75ZM8.75 15C8.33579 15 8 15.3358 8 15.75C8 16.1642 8.33579 16.5 8.75 16.5H15.25C15.6642 16.5 16 16.1642 16 15.75C16 15.3358 15.6642 15 15.25 15H8.75Z"
+																		></path>
+																	</svg>
+																</i>
+																Order
+															</a>
+														</li>
+														<li
+															role="menuitem"
+															class="ant-menu-submenu ant-menu-submenu-inline"
+														>
+															<div
+																aria-haspopup="true"
+																class="ant-menu-submenu-title"
+																style="
+																	padding-left: 24px;
+																"
+															>
+																<span>
+																	<i
+																		class="anticon"
+																		style="
+																			font-size: 1.5em;
+																		"
+																	>
+																		<svg
+																			width="1em"
+																			height="1em"
+																			viewBox="0 0 24 24"
+																			fill="currentColor"
+																		>
+																			<path
+																				d="M21.163 10.3857C21.4839 10.0925 21.3038 9.55786 20.871 9.51857L14.81 8.96842L12.4641 3.15082C12.2957 2.73336 11.7047 2.73352 11.5365 3.15107L9.19 8.97895L3.13278 9.51989C2.69935 9.5586 2.51881 10.0942 2.84035 10.3874L7.46 14.6L6.0807 20.8237C5.98439 21.2583 6.46126 21.5926 6.83698 21.3539L12 18.0236L17.1613 21.3524C17.5361 21.5914 18.0131 21.2566 17.9169 20.8223L16.538 14.5974L21.163 10.3857Z"
+																			></path>
+																		</svg>
+																	</i>
+																	Review
+																</span>
+																<i
+																	class="ant-menu-submenu-arrow"
+																></i>
+															</div>
+														</li>
+														<li
+															role="menuitem"
+															class="ant-menu-item"
+															style="
+																padding-left: 24px;
+															"
+														>
+															<a
+																href="https://www.swensens1112.com/en/account"
+															>
+																<i
+																	class="anticon"
+																	style="
+																		font-size: 1.5em;
+																	"
+																>
+																	<svg
+																		width="1em"
+																		height="1em"
+																		viewBox="0 0 24 24"
+																		fill="currentColor"
+																	>
+																		<path
+																			fill-rule="evenodd"
+																			clip-rule="evenodd"
+																			d="M15 6.75C15 8.54493 13.5449 10 11.75 10C9.95507 10 8.5 8.54493 8.5 6.75C8.5 4.95507 9.95507 3.5 11.75 3.5C13.5449 3.5 15 4.95507 15 6.75ZM13.5 6.75C13.5 7.7165 12.7165 8.5 11.75 8.5C10.7835 8.5 10 7.7165 10 6.75C10 5.7835 10.7835 5 11.75 5C12.7165 5 13.5 5.7835 13.5 6.75ZM11.75 11.5C14.1495 11.5 16 13.3505 16 15.75V18.5C16 19.0523 15.5523 19.5 15 19.5H8.5C7.94772 19.5 7.5 19.0523 7.5 18.5V15.75C7.5 13.3505 9.35051 11.5 11.75 11.5ZM11.75 13C10.2312 13 9 14.2312 9 15.75V18H15V15.75C15 14.2312 13.7688 13 11.75 13Z"
+																		></path>
+																	</svg>
+																</i>
+																My
+																Account
+															</a>
+														</li>
+													</ul>
+												</div>
+												<div
+													class="logout mt-36"
+												>
+													<ul
+														role="menu"
+														class="ant-menu ant-menu-inline ant-menu-root ant-menu-light"
+														style="
+															border-right: 0px;
+														"
+													>
+														<li
+															role="menuitem"
+															class="ant-menu-item"
+															style="
+																padding-left: 24px;
+															"
+															v-if="
+																isAuthenticated
+															"
+															@click="
+																logout
+															"
+														>
+															<i
+																class="anticon"
+																style="
+																	font-size: 1.5em;
+																"
+																><svg
+																	width="1em"
+																	height="1em"
+																	viewBox="0 0 24 24"
+																	fill="currentColor"
+																	xmlns="http://www.w3.org/2000/svg"
+																	aria-hidden="true"
+																	focusable="false"
+																	class=""
+																>
+																	<path
+																		d="M13 3H11V13H13V3ZM17.83 5.17L16.41 6.59C17.99 7.86 19 9.81 19 12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12C5 9.81 6.01 7.86 7.58 6.58L6.17 5.17C4.23 6.82 3 9.26 3 12C3 16.97 7.03 21 12 21C16.97 21 21 16.97 21 12C21 9.26 19.77 6.82 17.83 5.17Z"
+																	></path></svg
+															></i>
+															Logout
+														</li>
+													</ul>
+												</div>
+											</aside>
+										</div>
+									</a-drawer>
 								</li>
 							</ul>
 						</div>
@@ -434,23 +884,8 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 				<ul
 					data-v-1def8f76=""
 					role="menu"
-					class="header-user-menu mobile-menu-toggle ant-menu ant-menu-horizontal ant-menu-root ant-menu-light is-default-layout is-not-login"
+					class="header-user-menu mobile-menu-toggle ant-menu ant-menu-horizontal ant-menu-root ant-menu-light is-default-layout"
 				>
-					<li
-						role="menuitem"
-						class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-						style="display: none"
-					>
-						<div
-							aria-haspopup="true"
-							class="ant-menu-submenu-title"
-						>
-							<span>···</span
-							><i
-								class="ant-menu-submenu-arrow"
-							></i>
-						</div>
-					</li>
 					<li
 						data-v-1def8f76=""
 						role="menuitem"
@@ -468,66 +903,18 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 							"
 						/>
 					</li>
-					<li
-						role="menuitem"
-						class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-						style="display: none"
-					>
-						<div
-							aria-haspopup="true"
-							class="ant-menu-submenu-title"
-						>
-							<span>···</span
-							><i
-								class="ant-menu-submenu-arrow"
-							></i>
-						</div>
-					</li>
-					<li
-						data-v-1def8f76=""
-						role="menuitem"
-						class="ant-menu-item"
-						style="
-							font-size: 0px;
-							padding-left: 0px;
-						"
-					>
-						<img
-							data-v-1def8f76=""
-							src="~/assets/images/menu.svg"
-							alt=""
-							class="icon"
-							style="
-								height: 32px;
-								width: auto;
-							"
-						/>
-					</li>
-					<li
-						role="menuitem"
-						class="ant-menu-submenu ant-menu-submenu-horizontal ant-menu-overflowed-submenu"
-						style="
-							visibility: hidden;
-							position: absolute;
-							display: none;
-						"
-					>
-						<div
-							aria-haspopup="true"
-							class="ant-menu-submenu-title"
-						>
-							<span>···</span
-							><i
-								class="ant-menu-submenu-arrow"
-							></i>
-						</div>
-					</li>
 				</ul>
 			</div>
 		</div>
 	</header>
 </template>
 <style scoped>
+img {
+	vertical-align: middle;
+	border-style: none;
+	display: inline-block;
+}
+
 .ant-btn-primary {
 	color: #fff;
 	background-color: #e21c23;
@@ -558,5 +945,13 @@ const isAuthenticated = computed(() => state.isAuthenticated);
 	display: inline-flex;
 	vertical-align: middle; /* Aligns the icon vertically with the text */
 	margin-left: 4px; /* Adjust as needed for spacing between text and icon */
+}
+
+.welcome {
+	padding: 24px;
+}
+.welcome .name {
+	color: #e21c23;
+	line-height: 1.2;
 }
 </style>

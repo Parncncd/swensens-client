@@ -2,13 +2,6 @@
 import { state } from '../stores/auth';
 import RewardCarousel from './RewardCarousel.vue';
 const isAuthenticated = computed(() => state.isAuthenticated);
-watch(
-	isAuthenticated,
-	(authenStatus) => {
-		console.log('authenStatus changed to:', authenStatus);
-	},
-	{ deep: true }
-);
 </script>
 <template>
 	<div class="sw-section section-reward">

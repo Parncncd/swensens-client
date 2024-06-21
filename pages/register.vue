@@ -145,7 +145,6 @@
 
 					<!-- Password -->
 					<div class="mb-3">
-						<!-- <div class="mt-5 mb-3"> -->
 						<label
 							class="form-label"
 							for="password"
@@ -172,59 +171,58 @@
 					</div>
 
 					<!-- Gender -->
-					<div>
-						<div class="form-label">
-							Gender (optional)
-						</div>
-						<div
-							class="inline-grid grid-cols-3 gap-4 w-full"
+
+					<div class="form-label">
+						Gender (optional)
+					</div>
+					<div
+						class="inline-grid grid-cols-3 gap-4 w-full"
+					>
+						<button
+							class="gender"
+							:class="{
+								selected:
+									formData.gender ===
+									'male',
+							}"
+							@click="
+								toggleGender(
+									'male'
+								)
+							"
 						>
-							<button
-								class="gender"
-								:class="{
-									selected:
-										selectedGender ===
-										'male',
-								}"
-								@click="
-									toggleGender(
-										'male'
-									)
-								"
-							>
-								Male
-							</button>
-							<button
-								class="gender"
-								:class="{
-									selected:
-										selectedGender ===
-										'female',
-								}"
-								@click="
-									toggleGender(
-										'female'
-									)
-								"
-							>
-								Female
-							</button>
-							<button
-								class="gender"
-								:class="{
-									selected:
-										selectedGender ===
-										'notSpecified',
-								}"
-								@click="
-									toggleGender(
-										'notSpecified'
-									)
-								"
-							>
-								Not Specified
-							</button>
-						</div>
+							Male
+						</button>
+						<button
+							class="gender"
+							:class="{
+								selected:
+									formData.gender ===
+									'female',
+							}"
+							@click="
+								toggleGender(
+									'female'
+								)
+							"
+						>
+							Female
+						</button>
+						<button
+							class="gender"
+							:class="{
+								selected:
+									formData.gender ===
+									'other',
+							}"
+							@click="
+								toggleGender(
+									'other'
+								)
+							"
+						>
+							Not Specified
+						</button>
 					</div>
 
 					<!-- Birth Date -->
@@ -291,8 +289,9 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, watch } from 'vue';
+import { reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { actions } from '../stores/auth';
 
 const formData = reactive({
 	firstName: '',
@@ -306,11 +305,10 @@ const formData = reactive({
 	recieveInfo: false,
 });
 
-const selectedGender = ref('');
 const router = useRouter();
 
 const toggleGender = (gender) => {
-	selectedGender.value = gender === selectedGender.value ? '' : gender;
+	formData.gender = gender;
 };
 
 // Validation computed properties
@@ -353,7 +351,6 @@ const formattedBirthDate = computed(() =>
 	formData.birthDate.format('YYYY-MM-DD')
 );
 
-// Computed property to check if the form is valid for submission
 const isFormValid = computed(() => {
 	return (
 		formData.firstName.trim() !== '' &&
@@ -370,7 +367,6 @@ const isFormValid = computed(() => {
 	);
 });
 
-// Function to submit form data to API
 const submitData = async () => {
 	if (!isFormValid.value) {
 		console.error('Form is not valid. Cannot submit.');
@@ -399,31 +395,16 @@ const submitData = async () => {
 		if (response.ok) {
 			const responseData = await response.json();
 			console.log('Registration successful:', responseData);
-			// Navigate to success page or handle success state
-			router.push({ name: 'success' });
+			actions.login();
+			router.push('/');
 		} else {
 			const errorData = await response.json();
 			console.error('Registration failed:', errorData);
-			// Handle error state
 		}
 	} catch (error) {
 		console.error('Error during registration:', error);
-		// Handle network errors or other exceptions
 	}
 };
-
-const togglePasswordVisibility = () => {
-	passwordVisible.value = !passwordVisible.value;
-};
-
-// Log formData whenever it changes
-watch(
-	formData,
-	(newFormData) => {
-		console.log('formData changed:', newFormData);
-	},
-	{ deep: true }
-);
 </script>
 
 <style scoped>
